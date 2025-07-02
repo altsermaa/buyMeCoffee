@@ -20,9 +20,9 @@ export const signUp = async (req: Request, res: Response) => {
       res.status(200).send({ message: "Successfully created new user" });
       return;
     }
-    response.status(400).send({ message: "User already exists" });
+    res.status(400).send({ message: "User already exists" });
   } catch (err) {
-    response.status(500).send(err);
+    res.status(500).send(err);
     console.log(err);
     return;
   }
