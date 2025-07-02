@@ -15,6 +15,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod/v4";
 import { inputPropsType } from "../page";
 import Link from "next/link";
+import axios from "axios";
+import { useState } from "react";
 
 const usernameSchema = z.object({
   userName: z.string().min(5).max(50),
@@ -28,7 +30,20 @@ export const Step1 = ({ stepperNext, setUserName }: inputPropsType) => {
     },
   });
 
-  const handleSubmit = (values: z.infer<typeof usernameSchema>) => {
+  const [userNameExist, setUserNameExist] =useState("")
+
+  const handleSubmit = async (values: z.infer<typeof usernameSchema>) => {
+    try{
+      const response = await axios.post("http://localhost:8000/checkUserName", {
+         username: values.userName
+      }); 
+      console.log(response.data.message)
+      setUserNameExist(response.data);
+
+    } catch(err:any) {
+      alert(err.response.data.message);
+    }
+    
     console.log(values);
     setUserName(values.userName);
     stepperNext();
@@ -66,7 +81,10 @@ export const Step1 = ({ stepperNext, setUserName }: inputPropsType) => {
                     <Input placeholder="Enter your username here" {...field} />
                   </FormControl>
 
-                  <FormMessage />
+                  <FormMessage/>
+                  <div>{userNameExist}</div>
+
+                 
                 </FormItem>
               )}
             />
