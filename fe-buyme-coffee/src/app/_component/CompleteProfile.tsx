@@ -2,15 +2,11 @@
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Camera } from "lucide-react";
 import Image from "next/image";
@@ -176,58 +172,9 @@ export const CompleteProfile = () => {
             </Button>
           </form>
         </Form>
-        {/* <form>
-          <div className="flex flex-col gap-6 ">
-            {!previewURL ? (
-              <div>
-                <Label htmlFor="image">Add photo</Label>
-                <div className="relative w-50 h-50 flex flex-col items-center justify-center cursor-pointer rounded-full border border-gray-200">
-                  <Input
-                    id="image"
-                    type="file"
-                    required
-                    onChange={handleImageChange}
-                    className="absolute top-0 left-0 w-50 h-50 opacity-0 cursor-pointer"
-                  />
-                  <Camera className="text-gray-200" />
-                </div>
-              </div>
-            ) : (
-             
-            )}
 
-            <div className="grid gap-2">
-              <Label htmlFor="email">Name</Label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="Enter your name here"
-                required
-              />
-            </div>
-            <div className="grid gap-2">
-              <Label htmlFor="about">About</Label>
-              <Input
-                id="about"
-                type="text"
-                required
-                placeholder="Write about yourself here"
-                className="h-[131px]"
-              />
-            </div>
-
-            <div className="grid gap-2">
-              <Label htmlFor="url">Social media URL</Label>
-              <Input id="url" type="text" placeholder="https://" required />
-            </div>
-          </div>
-        </form> */}
       </CardContent>
-      {/* <CardFooter className="flex-col gap-2">
-        <Button type="submit" variant="secondary" className="w-[246px]">
-          Continue
-        </Button>
-      </CardFooter> */}
+
     </Card>
   );
 };
