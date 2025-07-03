@@ -1,4 +1,4 @@
-import { LoginInput } from "./_component/loginInput";
+import { LoginInput } from "./_component/LoginInput";
 
 const LoginPage = () => {
   return <LoginInput />;

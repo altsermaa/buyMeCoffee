@@ -7,7 +7,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+
       <div className="w-screen h-screen flex">
         <div className="w-1/2 h-screen bg-[#FBBF24] flex flex-col items-center justify-center relative">
           <div className="flex gap-1 absolute top-8 left-20 ">
@@ -32,6 +32,6 @@ export default function AuthLayout({
         </div>
         <div className="w-1/2 h-screen flex items-center">{children}</div>
       </div>
-    </html>
+
   );
 }

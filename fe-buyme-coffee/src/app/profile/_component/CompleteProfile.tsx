@@ -1,11 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Camera } from "lucide-react";
@@ -21,6 +16,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { inputPropsType } from "../page";
+import axios from "axios";
+import { useAuth } from "@/app/_component/UserProvider";
 
 const profileSchema = z.object({
   image: z.string().nonempty("Please enter image"),
@@ -29,7 +27,8 @@ const profileSchema = z.object({
   url: z.string().nonempty("Please enter a social link"),
 });
 
-export const CompleteProfile = () => {
+export const CompleteProfile = ({ stepperNext }: inputPropsType) => {
+  const { user } = useAuth();
   const [previewURL, setPreviewURL] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
 
@@ -37,11 +36,13 @@ export const CompleteProfile = () => {
     setFile(event?.target.files[0]);
     const preview = URL.createObjectURL(event?.target.files[0]);
     setPreviewURL(preview);
+    form.setValue("image", preview);
   };
 
   const deleteBtn = () => {
     setFile(null);
     setPreviewURL("");
+    form.setValue("image", "");
   };
 
   const form = useForm<z.infer<typeof profileSchema>>({
@@ -53,9 +54,43 @@ export const CompleteProfile = () => {
       url: "",
     },
   });
+  // const { errors } = form.formState;
+  // console.log(errors);
 
-  const handleSubmit = (values: z.infer<typeof profileSchema>) => {
-    console.log(values);
+  const handleSubmit = async (values: z.infer<typeof profileSchema>) => {
+    // console.log(values, "asdasd");
+    try {
+      if (!file) {
+        alert("Please choose an image");
+        return null;
+      }
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", "buyMeCoffee");
+
+      const result = await fetch(
+        "https://api.cloudinary.com/v1_1/dz8b3asdf/image/upload",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const img = await result.json();
+
+      await axios.post("http://localhost:8000/createProfile", {
+        name: values.name,
+        about: values.about,
+        image: img.secure_url,
+        url: values.url,
+        userId: user,
+      });
+      console.log(values);
+      stepperNext();
+    } catch (err: any) {
+      alert(err?.response?.data?.message);
+    }
   };
 
   const buttonDisabled =
@@ -164,17 +199,14 @@ export const CompleteProfile = () => {
             />
             <Button
               type="submit"
-              variant="secondary"
               className="w-[246px]"
-              //   disabled={buttonDisabled}
+              // disabled={buttonDisabled}
             >
               Continue
             </Button>
           </form>
         </Form>
-
       </CardContent>
-
     </Card>
   );
 };

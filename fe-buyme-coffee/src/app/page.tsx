@@ -1,13 +1,12 @@
 import { Sidebar } from "@/components/ui/sidebar";
-import { CompleteProfile } from "./_component/CompleteProfile";
-import { PaymentDetails } from "./_component/PaymentDetails";
+import { CompleteProfile } from "./profile/_component/CompleteProfile";
+import { PaymentDetails } from "./profile/_component/PaymentDetails";
 
 export default function Home() {
   return (
     <div>
-      <CompleteProfile />
-      <PaymentDetails />
       {/* <Sidebar /> */}
+      HOMEPAGE
     </div>
   );
 }

@@ -1,6 +1,7 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod/v4";
@@ -14,8 +15,10 @@ import {
 } from "@/components/ui/form";
 import { inputPropsType } from "../page";
 import Link from "next/link";
+import axios from "axios";
 
 const signUpSchema = z.object({
+  userName: z.string().min(5).max(50),
   email: z.email(),
   password: z
     .string()
@@ -27,13 +30,24 @@ export const Step2 = ({ userName }: inputPropsType) => {
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
+      userName: "",
       email: "",
       password: "",
     },
   });
 
-  const handleSubmit = (values: z.infer<typeof signUpSchema>) => {
-    console.log(values);
+  const handleSubmit = async (values: z.infer<typeof signUpSchema>) => {
+    console.log("hi");
+    try {
+      const response = await axios.post("http://localhost:8000/signUp", {
+        username: userName,
+        email: values.email,
+        password: values.password,
+      });
+      console.log(response.data);
+    } catch (err: any) {
+      alert(err.response.data.message);
+    }
   };
 
   const buttonDisabled = !form.watch("email") || !form.watch("password");

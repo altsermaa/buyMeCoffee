@@ -1,9 +1,61 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod/v4";
+import axios from "axios";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useRouter } from "next/navigation";
+
+const loginSchema = z.object({
+  email: z.email(),
+  password: z
+    .string()
+    .min(6)
+    .regex(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/),
+});
 
 export const LoginInput = () => {
+  const router = useRouter();
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
+
+  const handleSubmit = async (values: z.infer<typeof loginSchema>) => {
+    try {
+      const response = await axios.post("http://localhost:8000/login", {
+        email: values.email,
+        password: values.password,
+      });
+      console.log(response.data);
+      localStorage.setItem("token", response.data.token);
+
+      if (response.data.profile === true) {
+        router.push("/");
+      } else {
+        router.push("/profile");
+      }
+    } catch (err: any) {
+      alert(err.response.data.message);
+    }
+  };
+
+  const buttonDisabled = !form.watch("email") || !form.watch("password");
+
   return (
     <div className="w-full h-full relative flex items-center justify-center">
       <div className="absolute top-8 right-20 ">
@@ -16,22 +68,43 @@ export const LoginInput = () => {
           <h1 className="font-black text-2xl">Welcome back </h1>
         </div>
 
-        <form className="flex flex-col gap-6">
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="username">Email</Label>
-            <Input name="username" placeholder="Enter email here" />
-            <div className="text-red-500"></div>
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="username">Password</Label>
-            <Input name="username" placeholder="Enter your password here" />
-            <div className="text-red-500"></div>
-          </div>
+        <Form {...form}>
+          <form
+            className="space-y-8"
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your email here" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your password here" {...field} />
+                  </FormControl>
 
-          <Button variant="secondary" type="submit">
-            Continue
-          </Button>
-        </form>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" disabled={buttonDisabled}>
+              Continue
+            </Button>
+          </form>
+        </Form>
       </div>
     </div>
   );

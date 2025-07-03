@@ -30,23 +30,24 @@ export const Step1 = ({ stepperNext, setUserName }: inputPropsType) => {
     },
   });
 
-  const [userNameExist, setUserNameExist] =useState("")
+  const [userNameExist, setUserNameExist] = useState("");
 
   const handleSubmit = async (values: z.infer<typeof usernameSchema>) => {
-    try{
+    try {
       const response = await axios.post("http://localhost:8000/checkUserName", {
-         username: values.userName
-      }); 
-      console.log(response.data.message)
-      setUserNameExist(response.data);
-
-    } catch(err:any) {
-      alert(err.response.data.message);
+        username: values.userName,
+      });
+      console.log(response?.data?.message);
+      setUserNameExist(response?.data?.message);
+      if (response?.data?.message === "Username available") {
+        stepperNext();
+      }
+    } catch (err: any) {
+      alert(err?.response?.data?.message);
+      setUserNameExist(err?.response?.data?.message);
     }
-    
     console.log(values);
     setUserName(values.userName);
-    stepperNext();
   };
 
   const buttonDisabled = !form.watch("userName");
@@ -81,15 +82,13 @@ export const Step1 = ({ stepperNext, setUserName }: inputPropsType) => {
                     <Input placeholder="Enter your username here" {...field} />
                   </FormControl>
 
-                  <FormMessage/>
-                  <div>{userNameExist}</div>
-
-                 
+                  <FormMessage />
+                  <div className="text-red-500 text-sm">{userNameExist}</div>
                 </FormItem>
               )}
             />
             <Button type="submit" disabled={buttonDisabled}>
-              Submit
+              Continue
             </Button>
           </form>
         </Form>
