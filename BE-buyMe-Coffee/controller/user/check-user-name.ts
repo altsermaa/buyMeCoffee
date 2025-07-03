@@ -12,7 +12,7 @@ export const checkUserName = async (req: Request, res: Response) => {
       res.status(200).send({ message: "Username available" });
       return;
     }
-    res.status(400).send({ message: "User already exists" });
+    res.status(400).send({ message: "The username is already taken" });
   } catch (err) {
     res.status(500).send(err);
     console.log(err);
