@@ -35,18 +35,33 @@ export const login = async (req: Request, res: Response) => {
           where: { user: { id: isEmailExisted.id } },
         });
 
-        if (!isProfileExist) {
+        const isBankCardExisted = await prisma.bankCard.findFirst({
+          where: { user: { id: isEmailExisted.id } },
+        });
+
+        if (!isProfileExist && !isBankCardExisted) {
           res.status(200).send({
             message: "Successfully logged in",
             token: token,
             profile: false,
+            bankCard: false,
           });
           return;
-        } else {
+        }
+        if (isProfileExist && !isBankCardExisted) {
           res.status(200).send({
             message: "Successfully logged in",
             token: token,
             profile: true,
+            bankCard: false,
+          });
+        }
+        if (isProfileExist && isBankCardExisted) {
+          res.status(200).send({
+            message: "Successfully logged in",
+            token: token,
+            profile: true,
+            bankCard: true,
           });
         }
       } else {

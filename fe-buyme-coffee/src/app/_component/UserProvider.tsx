@@ -10,11 +10,11 @@ import {
 import axios from "axios";
 import { useRouter } from "next/navigation";
 
-type User = {
+export type User = {
   userId: string | null;
 };
 
-type AuthContextType = {
+export type AuthContextType = {
   user: User;
   tokenChecker: (token: string) => Promise<void>;
 };

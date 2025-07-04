@@ -1,13 +1,31 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CompleteProfile } from "./_component/CompleteProfile";
 import { PaymentDetails } from "./_component/PaymentDetails";
+import { useAuth } from "../_component/UserProvider";
+import axios from "axios";
 
 export type inputPropsType = {
   stepperNext: () => void;
 };
 
 const ProfilePage = () => {
+  const { user } = useAuth();
+  const [profileState, setProfileState] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkInfo = async () => {
+      const response = await axios.post(
+        "http://localhost:8000/checkDetailInfo",
+        {
+          userId: user,
+        }
+      );
+      setProfileState(response.data.profile);
+    };
+    checkInfo();
+  }, [user]);
+
   const comp = [CompleteProfile, PaymentDetails];
   const [index, setIndex] = useState<number>(0);
 
@@ -22,9 +40,7 @@ const ProfilePage = () => {
   };
 
   return (
-    <div>
-      <Stepper {...inputProps} />
-    </div>
+    <div>{profileState ? <PaymentDetails /> : <Stepper {...inputProps} />}</div>
   );
 };
 

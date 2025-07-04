@@ -44,7 +44,7 @@ export const LoginInput = () => {
       console.log(response.data);
       localStorage.setItem("token", response.data.token);
 
-      if (response.data.profile === true) {
+      if (response.data.profile === true && response.data.bankCard === true) {
         router.push("/");
       } else {
         router.push("/profile");

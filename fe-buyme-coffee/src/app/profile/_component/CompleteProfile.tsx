@@ -29,6 +29,7 @@ const profileSchema = z.object({
 
 export const CompleteProfile = ({ stepperNext }: inputPropsType) => {
   const { user } = useAuth();
+
   const [previewURL, setPreviewURL] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
 
@@ -58,7 +59,6 @@ export const CompleteProfile = ({ stepperNext }: inputPropsType) => {
   // console.log(errors);
 
   const handleSubmit = async (values: z.infer<typeof profileSchema>) => {
-    // console.log(values, "asdasd");
     try {
       if (!file) {
         alert("Please choose an image");
@@ -86,7 +86,6 @@ export const CompleteProfile = ({ stepperNext }: inputPropsType) => {
         url: values.url,
         userId: user,
       });
-      console.log(values);
       stepperNext();
     } catch (err: any) {
       alert(err?.response?.data?.message);
@@ -200,7 +199,7 @@ export const CompleteProfile = ({ stepperNext }: inputPropsType) => {
             <Button
               type="submit"
               className="w-[246px]"
-              // disabled={buttonDisabled}
+              disabled={buttonDisabled}
             >
               Continue
             </Button>

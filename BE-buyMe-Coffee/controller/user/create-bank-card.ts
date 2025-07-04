@@ -17,7 +17,7 @@ export const createBankCard =async (req: Request, res: Response) => {
         })
         res
       .status(201)
-      .json({ message: "Profile created successfully"});
+      .json({ message: "Bank card created successfully"});
 
     }catch(err: any) {
         res.status(500).send(err);

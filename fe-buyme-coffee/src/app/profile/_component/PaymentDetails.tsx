@@ -17,7 +17,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-// import * as z from "zod/v4";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,6 +28,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import axios from "axios";
+import { useAuth } from "@/app/_component/UserProvider";
+import { getYear, formatISO } from "date-fns";
+import { useRouter } from "next/navigation";
 
 const paymentDetailsSchema = z.object({
   country: z.string().nonempty("Select country to continue"),
@@ -41,6 +44,8 @@ const paymentDetailsSchema = z.object({
 });
 
 export const PaymentDetails = () => {
+  const { user } = useAuth();
+  const router = useRouter();
   const form = useForm<z.infer<typeof paymentDetailsSchema>>({
     resolver: zodResolver(paymentDetailsSchema),
     defaultValues: {
@@ -54,8 +59,28 @@ export const PaymentDetails = () => {
     },
   });
 
-  const handleSubmit = (values: z.infer<typeof paymentDetailsSchema>) => {
-    console.log(values);
+  const handleSubmit = async (values: z.infer<typeof paymentDetailsSchema>) => {
+    const date = new Date(
+      Number(values.expiryYear),
+      Number(values.expiryMonth),
+      1
+    );
+
+    const isoDateString = formatISO(date);
+
+    try {
+      await axios.post("http://localhost:8000/createBankCard", {
+        country: values.country,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        cardNumber: values.cardNumber,
+        expiryDate: isoDateString,
+        userId: user,
+      });
+      router.push("/");
+    } catch (err: any) {
+      alert(err?.response?.data?.message);
+    }
   };
 
   const buttonDisabled =
@@ -66,6 +91,24 @@ export const PaymentDetails = () => {
     !form.watch("expiryMonth") ||
     !form.watch("expiryYear") ||
     !form.watch("cvc");
+
+  const months = [
+    { label: "January", value: 1 },
+    { label: "February", value: 2 },
+    { label: "March", value: 3 },
+    { label: "April", value: 4 },
+    { label: "May", value: 5 },
+    { label: "June", value: 6 },
+    { label: "July", value: 7 },
+    { label: "August", value: 8 },
+    { label: "September", value: 9 },
+    { label: "October", value: 10 },
+    { label: "November", value: 11 },
+    { label: "December", value: 12 },
+  ];
+
+  const startYear = getYear(new Date());
+  const expiryYear = Array.from({ length: 5 }, (_, i) => startYear + i);
 
   return (
     <Card className="w-[510px] mx-auto mt-22">
@@ -159,7 +202,7 @@ export const PaymentDetails = () => {
                 name="expiryMonth"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Expires</FormLabel>
+                    <FormLabel>Expiry month</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -170,9 +213,11 @@ export const PaymentDetails = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="January">January </SelectItem>
-                        <SelectItem value="February">February</SelectItem>
-                        <SelectItem value="March">March</SelectItem>
+                        {months.map((month) => (
+                          <SelectItem value={month.value.toString()}>
+                            {month.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
 
@@ -185,7 +230,7 @@ export const PaymentDetails = () => {
                 name="expiryYear"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Expires</FormLabel>
+                    <FormLabel>Expiry year</FormLabel>
                     <Select
                       onValueChange={field.onChange}
                       defaultValue={field.value}
@@ -196,9 +241,11 @@ export const PaymentDetails = () => {
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        <SelectItem value="January">January </SelectItem>
-                        <SelectItem value="February">February</SelectItem>
-                        <SelectItem value="March">March</SelectItem>
+                        {expiryYear.map((year) => (
+                          <SelectItem value={year.toString()}>
+                            {year}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
 

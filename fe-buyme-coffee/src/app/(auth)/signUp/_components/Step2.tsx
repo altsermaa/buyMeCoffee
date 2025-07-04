@@ -18,7 +18,7 @@ import Link from "next/link";
 import axios from "axios";
 
 const signUpSchema = z.object({
-  userName: z.string().min(5).max(50),
+  // userName: z.string().min(5).max(50),
   email: z.email(),
   password: z
     .string()
@@ -30,7 +30,7 @@ export const Step2 = ({ userName }: inputPropsType) => {
   const form = useForm<z.infer<typeof signUpSchema>>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
-      userName: "",
+      // userName: "",
       email: "",
       password: "",
     },
