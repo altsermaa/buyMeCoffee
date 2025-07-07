@@ -7,6 +7,7 @@ import { checkProfile } from "../controller/user/check-profile";
 import { createBankCard } from "../controller/user/create-bank-card";
 import { checkDetailInfo } from "../controller/user/check-detail-info";
 import { createProfile } from "../controller/user/create-profile";
+import { getUserInfo } from "../controller/user/get-user-info";
 
 export const UserRouter = Router();
 
@@ -18,3 +19,4 @@ UserRouter.post("/checkProfile", checkProfile);
 UserRouter.post("/createProfile", createProfile);
 UserRouter.post("/createBankCard", createBankCard);
 UserRouter.post("/checkDetailInfo", checkDetailInfo);
+UserRouter.get("/getUserInfo/:user", getUserInfo);

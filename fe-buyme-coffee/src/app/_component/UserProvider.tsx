@@ -11,11 +11,11 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export type User = {
-  userId: string | null;
+  userId?: string;
 };
 
 export type AuthContextType = {
-  user: User;
+  user?: User;
   tokenChecker: (token: string) => Promise<void>;
 };
 
@@ -25,7 +25,7 @@ export const AuthContext = createContext<AuthContextType>(
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
   const router = useRouter();
-  const [user, setUser] = useState<User>({ userId: null });
+  const [user, setUser] = useState<User>();
 
   const tokenChecker = async (token: string) => {
     try {

@@ -1,19 +1,16 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { Coffee, Link } from "lucide-react";
+import { Coffee } from "lucide-react";
 import { usePathname } from "next/navigation";
-import * as React from "react";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useAuth } from "./UserProvider";
 import axios from "axios";
+import { HeaderName } from "./HeaderName";
+import { useEffect, useState } from "react";
+
+export type UserInfoType = {
+  name?: string;
+  avatarImage?: string;
+};
 
 export const Header = () => {
   const { user } = useAuth();
@@ -26,9 +23,17 @@ export const Header = () => {
 
   const differentHeader = ["/", "/accountSet", "/explore", "viewPage"];
 
-  // const getUserInfo = async () => {
-  //   const response = await axios.post();
-  // };
+  const [userInfo, setUserInfo] = useState<UserInfoType>();
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const response = await axios.get(
+        `http://localhost:8000/getUserInfo/${user}`
+      );
+      setUserInfo(response.data.userInfo);
+    };
+    getUserInfo();
+  }, [user]);
 
   return (
     <div className="flex justify-between w-[1280px] my-2 mx-auto">
@@ -37,9 +42,11 @@ export const Header = () => {
         <p className="font-black">Buy Me Coffee</p>
       </div>
 
-      {
-        // differentHeader.includes(!path) ? (<Button variant="secondary">Log out</Button>) :
-      }
+      {differentHeader.includes(path) ? (
+        <HeaderName name={userInfo?.name} avatarImage={userInfo?.avatarImage} />
+      ) : (
+        <Button variant="secondary">Log out</Button>
+      )}
     </div>
   );
 };

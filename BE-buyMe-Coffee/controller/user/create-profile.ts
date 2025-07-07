@@ -1,4 +1,4 @@
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 import { prisma } from "../../utils/prisma";
 
 export const createProfile = async (req: Request, res: Response) => {

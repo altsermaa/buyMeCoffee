@@ -2,9 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
-  CardAction,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -26,13 +24,13 @@ export const Right = () => {
           <div>
             <h6>Select amount:</h6>
             <div className="flex gap-1">
-              {amount.map((el) => {
+              {amount.map((el, index) => {
                 return (
-                  <Button variant="outline" className="w-fit">
-                    <Badge variant="secondary" className="py-3 px-4">
-                      <Coffee />${el}
-                    </Badge>
-                  </Button>
+                  // <Button variant="outline" className="w-fit" key={index}>
+                  <Badge variant="secondary" className="py-3 px-4">
+                    <Coffee />${el}
+                  </Badge>
+                  // </Button>
                 );
               })}
             </div>
