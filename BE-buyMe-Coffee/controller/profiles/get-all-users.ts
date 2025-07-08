@@ -2,8 +2,16 @@ import { Request, Response } from "express";
 import { prisma } from "../../utils/prisma";
 
 export const getAllUsers = async (req: Request, res: Response) => {
+  const userId = Number(res.locals.userId);
+
   try {
-    const allUsersProfiles = await prisma.profile.findMany();
+    const allUsersProfiles = await prisma.profile.findMany({
+      where: {
+        userId: {
+          not: userId,
+        },
+      },
+    });
 
     if (allUsersProfiles) {
       res.status(200).send({

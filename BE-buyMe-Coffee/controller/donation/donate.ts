@@ -3,4 +3,21 @@ import { prisma } from "../../utils/prisma";
 
 export const donate = async (req: Request, res: Response) => {
   const { amount, url, message, donorUserId, recipientUserId } = req.body;
+
+  try {
+    await prisma.donation.create({
+      data: {
+        amount: amount,
+        specialMessage: message,
+        socialURLOrBuyMeACoffee: url,
+        donor: { connect: { id: donorUserId } },
+        recipient: { connect: { id: recipientUserId } },
+      },
+    });
+    res.status(201).json({ message: "Donated successfully" });
+  } catch (err: any) {
+    res.status(500).send(err);
+    console.log(err);
+    return;
+  }
 };
