@@ -15,9 +15,7 @@ export const createProfile = async (req: Request, res: Response) => {
       },
     });
 
-    res
-      .status(201)
-      .json({ message: "Profile created successfully"});
+    res.status(201).json({ message: "Profile created successfully" });
   } catch (err: any) {
     res.status(500).send(err);
     console.log(err);

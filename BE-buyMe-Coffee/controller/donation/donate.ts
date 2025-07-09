@@ -1,8 +1,10 @@
 import { Request, Response } from "express";
 import { prisma } from "../../utils/prisma";
+// import QRCode from "qrcode";
 
 export const donate = async (req: Request, res: Response) => {
   const { amount, url, message, donorUserId, recipientUserId } = req.body;
+  const paymentUrl = "http://localhost:3000/payment/:";
 
   try {
     await prisma.donation.create({
